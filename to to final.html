@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #2196f3, #64b5f6);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    li span {
+      flex-grow: 1;
+    }
+    li button {
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .timer {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <input type="number" id="timerInput" placeholder="Enter a timer (in seconds)">
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const timerInput = document.getElementById('timerInput');
+    const taskList = document.getElementById('taskList');
+
+    function addTask() {
+      const taskText = taskInput.value;
+      const timerValue = parseInt(timerInput.value);
+
+      if (taskText !== '' && !isNaN(timerValue)) {
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.textContent = taskText;
+        const button = document.createElement('button');
+        button.textContent = 'Delete';
+        button.onclick = function() {
+          li.remove();
+        };
+        li.appendChild(span);
+        li.appendChild(button);
+        taskList.appendChild(li);
+        taskInput.value = '';
+        timerInput.value = '';
+
+        startTimer(li, timerValue);
+      }
+    }
+
+    function startTimer(li, timerValue) {
+      const timerDisplay = document.createElement('span');
+      timerDisplay.classList.add('timer');
+      li.appendChild(timerDisplay);
+
+      const timerInterval = setInterval(function() {
+        if (timerValue > 0) {
+          timerDisplay.textContent = formatTime(timerValue);
+          timerValue--;
+        } else {
+          clearInterval(timerInterval);
+          li.style.backgroundColor = '#ffc107';
+          li.innerHTML += '<span>(Incomplete)</span>';
+          li.onclick = function() {
+            this.remove();
+          };
+          alert('Stay motivated and complete your task!');
+        }
+      }, 1000);
+    }
+
+    function formatTime(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+  </script>
+</body>
+</html>
